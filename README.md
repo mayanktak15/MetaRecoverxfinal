@@ -192,8 +192,8 @@ sudo dnf install -y \
 
 ```bash
 # Clone repository
-git clone https://github.com/bhargavgajare1479/Unearth.git
-cd Unearth
+git clone https://github.com/mayanktak15/MetaRecoverxfinal.git
+cd MetaRecoverxfinal
 
 # Create virtual environment
 python -m venv venv
@@ -206,19 +206,7 @@ pip install -r requirements.txt
 python run.py
 ```
 
-### Run Meta RecoverX AI Agent
 
-```bash
-# Clone repository
-git clone https://github.com/bhargavgajare1479/unearth-agent.git
-cd unearth-agent
-
-# Install dependencies
-npm install
-
-# Run the development server
-npm run dev
-```
 
 ## File System Support
 
