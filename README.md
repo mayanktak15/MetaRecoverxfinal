@@ -207,6 +207,27 @@ python run.py
 ```
 
 
+Common CLI commands:
+
+```bash
+# Show CLI help
+python -m src.ui.cli --help
+
+# Show version
+python -m src.ui.cli version
+
+# Analyze an image
+python -m src.ui.cli analyze /path/to/disk.img
+
+# Recover files
+python -m src.ui.cli recover /path/to/disk.img /path/to/output
+
+# Search keywords in a session
+python -m src.ui.cli search <session_id> "password,confidential"
+```
+
+Note: recovery operations require root privileges for raw disk access.
+
 
 ## File System Support
 
