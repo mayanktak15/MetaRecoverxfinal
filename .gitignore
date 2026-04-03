@@ -1,0 +1,21 @@
+# IDE
+.vscode/
+
+# Logs
+logs/
+
+# Recovered output data (large binary files)
+data/recovered_output/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Virtual environment
+venv/
+.env/
+
+# OS files
+.DS_Store
+Thumbs.db
