@@ -228,6 +228,122 @@ python -m src.ui.cli search <session_id> "password,confidential"
 
 Note: recovery operations require root privileges for raw disk access.
 
+## Complete Demo Setup Guide (CLI Mode)
+
+Use this walkthrough to create a test XFS disk image, add evidence files, delete them, and then run recovery using the CLI.
+
+First, open a new terminal in VS Code (Ctrl + Shift + `), then activate your virtual environment:
+
+```bash
+source venv/bin/activate
+```
+
+### Step 1 - Create a disk image
+
+```bash
+dd if=/dev/zero of=~/Desktop/test_disk.img bs=1M count=500
+```
+
+### Step 2 - Install XFS tools
+
+This is a system dependency (not installed in the virtual environment):
+
+```bash
+sudo apt install -y xfsprogs
+```
+
+### Step 3 - Format as XFS
+
+```bash
+sudo mkfs.xfs -f ~/Desktop/test_disk.img
+```
+
+### Step 4 - Mount the image
+
+```bash
+sudo mkdir -p /mnt/test_xfs
+sudo mount -o loop ~/Desktop/test_disk.img /mnt/test_xfs
+sudo chown $USER:$USER /mnt/test_xfs
+```
+
+### Step 5 - Create a PDF evidence file
+
+`reportlab` should already be installed in your virtual environment.
+
+```bash
+venv/bin/python -c "
+from reportlab.pdfgen import canvas
+c = canvas.Canvas('/mnt/test_xfs/evidence.pdf')
+c.drawString(100, 750, 'Confidential Document - Case 2024')
+c.drawString(100, 700, 'Suspect: John Doe')
+c.drawString(100, 650, 'Password: admin123')
+c.save()
+print('PDF created!')
+"
+```
+
+### Step 6 - Copy your resume into the image
+
+```bash
+cp ~/Desktop/resume.pdf /mnt/test_xfs/resume.pdf
+```
+
+### Step 7 - Copy a JPG image into the image
+
+This finds an existing JPG on the system and copies it into the mounted image:
+
+```bash
+find / -name "*.jpg" -size +10k 2>/dev/null | head -1 | xargs -I{} cp {} /mnt/test_xfs/photo.jpg
+```
+
+### Step 8 - Verify files are present
+
+```bash
+ls /mnt/test_xfs/
+```
+
+Expected output:
+
+```text
+evidence.pdf  resume.pdf  photo.jpg
+```
+
+### Step 9 - Delete all files (simulate evidence deletion)
+
+```bash
+rm /mnt/test_xfs/evidence.pdf
+rm /mnt/test_xfs/resume.pdf
+rm /mnt/test_xfs/photo.jpg
+```
+
+### Step 10 - Verify the mount is now empty
+
+```bash
+ls /mnt/test_xfs/
+```
+
+### Step 11 - Unmount the image
+
+```bash
+sudo umount /mnt/test_xfs
+```
+
+### Step 12 - Run recovery in CLI mode
+
+```bash
+sudo venv/bin/python -m src.ui.cli analyze ~/Desktop/test_disk.img
+sudo venv/bin/python -m src.ui.cli recover ~/Desktop/test_disk.img data/recovered_output/demo_xfs
+```
+
+## Demo Setup Summary
+
+| Tool/File | Installed/Located Where | Need to install again? |
+|---|---|---|
+| `xfsprogs` (`mkfs.xfs`) | System packages (`apt`) | No (will skip if already installed) |
+| `reportlab` | Python virtual environment | No (already installed in venv) |
+| `resume.pdf` | `~/Desktop` | No (already present) |
+| JPG input file | Existing Ubuntu system files | No (found automatically) |
+
 
 ## File System Support
 
